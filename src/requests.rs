@@ -19,7 +19,6 @@ pub fn print_shifter_info(shift: Shift, conn: &oracle::Connection) {
             return;
         }
     };
-    // row.get("shift_type_id").unwrap();
     let shifter_ccid: String = match conn.query_row(sql_shifter_ccid, &[&shifter_type_id]) {
         Ok(v) => match v.get("shifter_id") {
             Ok(v1) => v1,
