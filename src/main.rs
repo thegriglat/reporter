@@ -10,8 +10,6 @@ use requests::print_shifter_info;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    let start = NaiveDateTime::parse_from_str(&args[1], &"%d-%m-%Y %H:%M:%S");
-    let end = NaiveDateTime::parse_from_str(&args[2], &"%d-%m-%Y %H:%M:%S");
 
     let shifts: Vec<Shift> = vec![
         Shift {
@@ -32,25 +30,22 @@ fn main() {
         },
     ];
 
-    match start {
-        Ok(_v) => {}
+    let start = match NaiveDateTime::parse_from_str(&args[1], &"%d-%m-%Y %H:%M:%S") {
+        Ok(v) => v,
         Err(e) => {
             println!("Incorrect start date: {}", e);
+            return;
         }
-    }
-
-    match end {
-        Ok(_v) => {}
+    };
+    let end = match NaiveDateTime::parse_from_str(&args[2], &"%d-%m-%Y %H:%M:%S") {
+        Ok(v) => v,
         Err(e) => {
             println!("Incorrect end date: {}", e);
+            return;
         }
-    }
+    };
 
-    println!(
-        "# PFG Report for the period from  {} until {}",
-        start.unwrap(),
-        end.unwrap()
-    );
+    println!("# PFG Report for the period from  {} until {}", start, end);
 
     let user = "user";
     let password = "pass";
