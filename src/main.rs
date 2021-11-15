@@ -9,7 +9,7 @@ mod shift;
 use shift::Shift;
 
 mod requests;
-use requests::print_shifter_info;
+use requests::*;
 
 fn main() {
     let yaml = load_yaml!("cli.yml");
@@ -68,7 +68,12 @@ fn main() {
             return;
         }
     };
+
+    // shifters
     for shift in shifts {
         print_shifter_info(shift, &conn);
     }
+
+    // LHC fills
+    print_lhc_fills(&conn, start, end);
 }
