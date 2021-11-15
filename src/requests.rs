@@ -82,11 +82,14 @@ pub fn print_lhc_fills(conn: &oracle::Connection, start: NaiveDateTime, end: Nai
                             r.get("integratedlumi").unwrap_or("-".to_string());
                         let integratedlivelumi: String =
                             r.get("integratedlivelumi").unwrap_or("-".to_string());
-                        let mut link: String = "".to_owned();
-                        if fill != "-" {
-                            link = "https://cmswbm.web.cern.ch/cmswbm/cmsdb/servlet/FillRuntimeChart?runtimeID=".to_owned();
-                            link.push_str(&fill);
-                        }
+                        let link:String  = match fill.as_str() {
+                            "-" => {
+                                "".to_string()
+                            },
+                            _ => {
+                                "https://cmswbm.web.cern.ch/cmswbm/cmsdb/servlet/FillRuntimeChart?runtimeID=".to_owned() + &fill
+                            }
+                        };
                         println!(
                             "| {} | {} | {} | {} | {} | {} | {} |",
                             fill,
