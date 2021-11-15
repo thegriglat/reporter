@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 oracle = "*"
 chrono = "*"
+clap = {version = "~2.27.0", features = ["yaml"]}

@@ -1,6 +1,9 @@
-use chrono::NaiveDateTime;
+use chrono::{Duration, NaiveDateTime, Utc};
 use oracle::Connection;
-use std::env;
+
+#[macro_use]
+extern crate clap;
+use clap::App;
 
 mod shift;
 use shift::Shift;
@@ -9,7 +12,8 @@ mod requests;
 use requests::print_shifter_info;
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
+    let yaml = load_yaml!("cli.yml");
+    let matches = App::from_yaml(yaml).get_matches();
 
     let shifts: Vec<Shift> = vec![
         Shift {
@@ -30,26 +34,31 @@ fn main() {
         },
     ];
 
-    let start = match NaiveDateTime::parse_from_str(&args[1], &"%d-%m-%Y %H:%M:%S") {
+    let start = match NaiveDateTime::parse_from_str(
+        matches.value_of("start").unwrap_or(""),
+        &"%d-%m-%Y %H:%M:%S",
+    ) {
         Ok(v) => v,
-        Err(e) => {
-            println!("Incorrect start date: {}", e);
-            return;
-        }
+        Err(_e) => (Utc::now() - Duration::days(1)).naive_utc(),
     };
-    let end = match NaiveDateTime::parse_from_str(&args[2], &"%d-%m-%Y %H:%M:%S") {
+    let end = match NaiveDateTime::parse_from_str(
+        matches.value_of("end").unwrap_or(""),
+        &"%d-%m-%Y %H:%M:%S",
+    ) {
         Ok(v) => v,
-        Err(e) => {
-            println!("Incorrect end date: {}", e);
-            return;
-        }
+        Err(_e) => Utc::now().naive_utc(),
     };
 
-    println!("# PFG Report for the period from  {} until {}", start, end);
+    println!(
+        "# PFG Report for the period from  {} until {}",
+        start.format("%d-%m-%Y %H:%M:%S"),
+        end.format("%d-%m-%Y %H:%M:%S")
+    );
 
-    let user = "user";
-    let password = "pass";
-    let host = "host";
+    // allow unwrap as they are required options
+    let user = matches.value_of("user").unwrap();
+    let password = matches.value_of("password").unwrap();
+    let host = matches.value_of("host").unwrap();
 
     let conn = match Connection::connect(user, password, host) {
         Ok(v) => v,

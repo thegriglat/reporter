@@ -1,0 +1,38 @@
+name: reporter
+version: "0.0"
+author: Grigory L. <thegriglat@gmail.com>
+about: Prepare PFG report for a period of time
+args:
+    - user:
+        short: u
+        long: user
+        value_name: user
+        help: Oracle user name
+        takes_value: true
+        required: true
+    - password:
+        short: p
+        long: password
+        value_name: password
+        help: Oracle user password
+        takes_value: true
+        required: true
+    - host:
+        short: h
+        long: host
+        value_name: host
+        help: Oracle database host/path
+        takes_value: true
+        required: true
+    - start:
+        short: s
+        long: start
+        value_name: start
+        help: Start date
+        takes_value: true
+    - end:
+        short: e
+        long: end
+        value_name: end
+        help: End date
+        takes_value: true
